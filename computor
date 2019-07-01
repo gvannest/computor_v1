@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+
+import sys
+
+from equation import Equation
+
+def main(argv):
+	eq = Equation(argv)
+	eq.build_trees()
+	print(eq.tree)
+
+
+if __name__ == "__main__":
+	if len(sys.argv) != 2:
+		print("Please provide a valid string argument.")
+		sys.exit(0)
+	main(sys.argv[1])
