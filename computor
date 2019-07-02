@@ -4,10 +4,13 @@ import sys
 
 from equation import Equation
 
+
 def main(argv):
 	eq = Equation(argv)
 	eq.build_trees()
 	print(eq.tree)
+	eq.reduce_equation()
+	# print(eq.reduced_tree)
 
 
 if __name__ == "__main__":
