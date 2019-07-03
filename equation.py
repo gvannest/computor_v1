@@ -1,5 +1,3 @@
-import sys
-
 from collections import deque
 
 from utils import dic_precedence, ft_error
@@ -19,16 +17,41 @@ class Equation:
 		- tree : parsed tree corresponding to the equation
 	"""
 
-	def __init__(self, line):
+	def __init__(self, line='', flag=False):
 		self.equation_str = line
 		self.tree = []
 		self.reduced_tree = deque()
+		self.reduced_str = ''
+		self.flag_h = flag
+
+	def parsing_errors(self):
+		self.equation_str = self.equation_str.replace(' ','')
+		permission = set([e for e in dic_precedence.keys()] + [')', '(', 'X', '.'])
+		if self.equation_str[0] == '*' or self.equation_str[0] == '/':
+			ft_error("Syntax error : first element is a wrong operator (ony + and - allowed)")
+		for i in range(len(self.equation_str)):
+			if self.equation_str[i] not in permission and not self.equation_str[i].isdigit():
+				ft_error("Syntax error : unauthorized token in equation.")
+			if i < len(self.equation_str) - 1:
+				if (self.equation_str[i] == '.' and not self.equation_str[i + 1].isdigit())\
+					or (self.equation_str[i + 1] == '.' and not self.equation_str[i].isdigit()):
+					ft_error("Syntax error : need a digit before and after a dot.")
+				if self.equation_str[i] in dic_precedence.keys() and self.equation_str[i + 1] in dic_precedence.keys():
+					if not (self.equation_str[i] == '=' and self.equation_str[i + 1] in ['+', '-']):
+						ft_error("Syntax error : two operators side by side which cannot be combined.")
+			else:
+				if self.equation_str[i] in dic_precedence.keys() or self.equation_str[i] == '.':
+					ft_error("Syntax error : last element is not a valid token to end the equation.")
+		return None
 
 	def build_trees(self):
 		"""Method which builds the left and right trees from the input string, using a syntactic binary tree"""
 		self.tree = deque()
 		operator_stack = deque()
-		list_eq = self.equation_str.split('=')[0] + '-' + '(' + self.equation_str.split('=')[1] + ')'
+		if '=' in self.equation_str:
+			list_eq = self.equation_str.split('=')[0] + '-' + '(' + self.equation_str.split('=')[1] + ')'
+		else:
+			list_eq = self.equation_str
 		j = 0
 		while j < len(list_eq):
 			n = ''
@@ -65,6 +88,24 @@ class Equation:
 
 	def reduce_equation(self):
 
+		def complete_newtree(new_tree, e):
+			if isinstance(e, X):
+				new_tree.append(e)
+			elif isinstance(e, Operator):
+				complete_newtree(new_tree, e.left)
+				complete_newtree(new_tree, e.right)
+			return None
+
+		def ft_print_tree(e, spacing=''):
+			if isinstance(e, X):
+				print(f"{spacing} {e}")
+				return
+			print(f"{spacing} {e}")
+			print(f"{spacing} -> left : ")
+			ft_print_tree(e.left, spacing + ' ')
+			print(f"{spacing} -> right : ")
+			ft_print_tree(e.right, spacing + ' ')
+
 		def reduce_intermediate():
 			output_stack = deque()
 			new_tree = deque()
@@ -73,28 +114,26 @@ class Equation:
 					output_stack.append(e)
 				if isinstance(e, Operator):
 					e.right = output_stack.pop()
-					e.left = output_stack.pop()
+					if not output_stack:
+						e.left = X(factor=0, power=0)
+					else:
+						e.left = output_stack.pop()
 					if e.oper == '-':
 						e.right = -1.0 * e.right
 						e.oper = '+'
 					e.evaluate()
-					print(e.oper)
-					print(e.left)
-					print(e.right)
-					print(e.value)
-					if not isinstance(e.value, X):
-						if e.left and isinstance(e.left, X):
-							new_tree.append(e.left)
-						if e.right and isinstance(e.right, X):
-							new_tree.append(e.right)
 					output_stack.append(e.value)
+					# ft_print_tree(e.value)
+					# print('')
+			# ft_print_tree(e.value)
+			complete_newtree(new_tree, e.value)
 			return sorted(new_tree)
 
 		def reduce_final(new_tree):
 			self.reduced_tree = []
 			tmp_list = []
 			if len(new_tree) == 1:
-				self.reduced_tree.append(new_tree[1])
+				self.reduced_tree.append(new_tree[0])
 				return None
 			for e in new_tree:
 				if len(tmp_list) < 1:
@@ -105,20 +144,36 @@ class Equation:
 					o.right = tmp_list.pop()
 					o.left = tmp_list.pop()
 					o.evaluate()
-					if o.value:
+					if isinstance(o.value, X):
 						tmp_list.append(o.value)
 					else:
 						self.reduced_tree.append(o.left)
 						tmp_list.append(o.right)
-
 			while tmp_list:
 				self.reduced_tree.append(tmp_list.pop())
+			return None
+
+		def reduced_equation():
+			for i,e in enumerate(self.reduced_tree):
+				if not e.factor % 1:
+					e.factor = int(e.factor)
+				if not e.power % 1:
+					e.power = int(e.power)
+				self.reduced_str += e.__str__()
+				if i != len(self.reduced_tree) - 1:
+					self.reduced_str += ' + '
+				else:
+					self.reduced_str += ' = 0'
+			self.reduced_str = self.reduced_str.replace('+ -', '- ')
+			if self.flag_h:
+				self.reduced_str = self.reduced_str.replace(' * X^0', '').replace('X^1', 'X').replace('1 * ', '')
 			return None
 
 		new_tree = reduce_intermediate()
 		print(new_tree)
 		reduce_final(new_tree)
-		print(self.reduced_tree)
+		reduced_equation()
+
 		return None
 
 

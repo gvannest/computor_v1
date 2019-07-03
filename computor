@@ -1,20 +1,35 @@
 #!/usr/bin/env python3
 
 import sys
+import argparse
 
 from equation import Equation
 
 
-def main(argv):
-	eq = Equation(argv)
+def ft_argparser():
+	parser = argparse.ArgumentParser()
+	parser.add_argument(
+		"input", type=str, help="Equation to be reduced and solved")
+	parser.add_argument("-r", "--human_readable", action="store_true",
+						help="Everything in the title.")
+	# parser.add_argument("-u", "--undetermined", action="store_true",
+	# 					help="Undetermined mode, where the user can clarify undetermined facts")
+	# parser.add_argument("-v", "--verbose", action="store_true",
+	# 					help="Verbose mode. Outputs the rules leading to a particular conclusion")
+	args = parser.parse_args()
+	return args
+
+def main(args):
+	if not args.input:
+		print("Error : please provide a valid string as argument.")
+		sys.exit(0)
+	eq = Equation(line=args.input, flag=args.human_readable)
+	eq.parsing_errors()
 	eq.build_trees()
-	print(eq.tree)
 	eq.reduce_equation()
-	# print(eq.reduced_tree)
+	print(eq.reduced_str)
 
 
 if __name__ == "__main__":
-	if len(sys.argv) != 2:
-		print("Please provide a valid string argument.")
-		sys.exit(0)
-	main(sys.argv[1])
+	args = ft_argparser()
+	main(args)

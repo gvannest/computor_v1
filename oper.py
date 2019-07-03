@@ -28,9 +28,9 @@ class Operator:
 
 		def ft_check_powtype():
 			if isinstance(self.left, X_class.X) and isinstance(self.left.power, X_class.X):
-				self.left.power = self.left.power.factor
+				self.left.power = float(self.left.power.factor)
 			if isinstance(self.right, X_class.X) and isinstance(self.right.power, X_class.X):
-				self.right.power = self.right.power.factor
+				self.right.power = float(self.right.power.factor)
 			return None
 
 		def ft_plus():
@@ -47,7 +47,7 @@ class Operator:
 
 		def ft_pow():
 			if isinstance(self.right, X_class.X):
-				self.right = self.right.factor
+				self.right = float(self.right.factor)
 			self.value = self.left ** self.right
 
 		dic_oper = {
@@ -63,28 +63,22 @@ class Operator:
 
 		return None
 
+	def __add__(self, other):
+		o = Operator('+')
+		o.left = self
+		o.right = other
+		return o
+
 	def __pow__(self, other):
-		if other == 0:
-			return 1
+		if other == 1:
+			return self
 		elif isinstance(other, float):
-			if self.oper == '+':
 				return self * self.__pow__(other - 1)
 
 	def __mul__(self, other):
-		print(self)
-		print(other)
-		if isinstance(other, X_class.X):
+		if isinstance(other, X_class.X) or isinstance(other, float):
 			return self.left * other + self.right * other
-		# if isinstance(self.left, X_class.X) and isinstance(other.left, X_class.X):
-		# 	return self.left * other.left
-		# if isinstance(self.left, X_class.X) and isinstance(other.right, X_class.X):
-		# 	return self.left * other.right
-		# if isinstance(self.right, X_class.X) and isinstance(other.left, X_class.X):
-		# 	return self.right * other.left
-		# if isinstance(self.right, X_class.X) and isinstance(other.right, X_class.X):
-		# 	return self.right * other.right
 		return self.left * other.left + self.left * other.right + self.right * other.left + self.right * other.right
-
 
 
 	def __rmul__(self, other):
