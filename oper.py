@@ -64,10 +64,9 @@ class Operator:
 		return None
 
 	def __add__(self, other):
-		o = Operator('+')
-		o.left = self
-		o.right = other
-		return o
+		if isinstance(other, X_class.X):
+			return other + self
+		return self.left + self.right + other.left + other.right
 
 	def __pow__(self, other):
 		if other == 1:
