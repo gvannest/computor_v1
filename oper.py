@@ -80,10 +80,8 @@ class Operator:
 			return self.left * other + self.right * other
 		return self.left * other.left + self.left * other.right + self.right * other.left + self.right * other.right
 
-
 	def __rmul__(self, other):
 		return self * other
-
 
 	def __str__(self):
 		return f"{self.oper}"

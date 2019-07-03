@@ -45,10 +45,7 @@ class X:
 		if isinstance(other, float):
 			self.factor *= other
 			return self
-		o = oper.Operator('*')
-		o.left = self
-		o.right = other
-		return o
+		return other * self
 
 	def __rmul__(self, other):
 		return self * other
