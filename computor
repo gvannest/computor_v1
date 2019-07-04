@@ -25,9 +25,9 @@ def main(args):
 		sys.exit(0)
 	eq = Equation(line=args.input, flag=args.human_readable)
 	eq.parsing_errors()
-	eq.build_trees()
-	eq.reduce_equation()
-	print(eq.reduced_str)
+	eq.build_tree()
+	# eq.reduce_equation()
+	# print(eq.reduced_str)
 
 
 if __name__ == "__main__":

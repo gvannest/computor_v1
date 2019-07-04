@@ -20,8 +20,7 @@ class Operator:
 
 	def __init__(self, oper):
 		self.oper = oper
-		self.left = None
-		self.right = None
+		self.elements = []
 		self.value = None
 
 	def evaluate(self):
