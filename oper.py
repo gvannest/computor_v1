@@ -52,7 +52,7 @@ class Operator:
 
 		dic_oper = {
 			'+': ft_plus,
-			# '-': ft_minus,
+			'-': ft_minus,
 			'*': ft_mul,
 			'/': ft_div,
 			'^': ft_pow,
@@ -67,6 +67,17 @@ class Operator:
 		if isinstance(other, X_class.X):
 			return other + self
 		return self.left + self.right + other.left + other.right
+
+	def __radd__(self, other):
+		return self + other
+
+	def __sub__(self, other):
+		if isinstance(other, X_class.X):
+			return -1.0 * other + self
+		return self.left + self.right - other.left - other.right
+
+	def __rsub__(self, other):
+		return -1.0 * self + other
 
 	def __pow__(self, other):
 		if other == 1:

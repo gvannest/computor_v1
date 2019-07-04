@@ -25,16 +25,22 @@ class X:
 		return self + other
 
 	def __sub__(self, other):
-		new_obj = X()
 		if isinstance(other, X) and other.power == self.power:
+			new_obj = X()
 			new_obj.factor = self.factor - other.factor
 			new_obj.power = self.power
 			return new_obj
 		if (isinstance(other, X) and not other.factor) or not other:
 			return self
+		elif not self.factor:
+			return -1.0 * other
+		o = oper.Operator('+')
+		o.left = self
+		o.right = -1.0 * other
+		return o
 
 	def __rsub__(self, other):
-		return self - other
+		return -1.0 * self + other
 
 	def __mul__(self, other):
 		if isinstance(other, X):

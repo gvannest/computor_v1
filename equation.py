@@ -25,6 +25,8 @@ class Equation:
 		self.flag_h = flag
 
 	def parsing_errors(self):
+		if '=' not in self.equation_str:
+			ft_error("Syntax error : please provide a valid equation.")
 		self.equation_str = self.equation_str.replace(' ','')
 		permission = set([e for e in dic_precedence.keys()] + [')', '(', 'X', '.'])
 		if self.equation_str[0] == '*' or self.equation_str[0] == '/':
@@ -39,6 +41,9 @@ class Equation:
 				if self.equation_str[i] in dic_precedence.keys() and self.equation_str[i + 1] in dic_precedence.keys():
 					if not (self.equation_str[i] == '=' and self.equation_str[i + 1] in ['+', '-']):
 						ft_error("Syntax error : two operators side by side which cannot be combined.")
+				if self.equation_str[i] in ['(', ')'] and self.equation_str[i + 1] in dic_precedence.keys():
+					if not self.equation_str[i + 1] in ['+', '-', '=']:
+						ft_error("Syntax error : two operators side by side which cannot be combined.")
 			else:
 				if self.equation_str[i] in dic_precedence.keys() or self.equation_str[i] == '.':
 					ft_error("Syntax error : last element is not a valid token to end the equation.")
@@ -46,12 +51,9 @@ class Equation:
 
 	def build_trees(self):
 		"""Method which builds the left and right trees from the input string, using a syntactic binary tree"""
-		self.tree = deque()
 		operator_stack = deque()
-		if '=' in self.equation_str:
-			list_eq = self.equation_str.split('=')[0] + '-' + '(' + self.equation_str.split('=')[1] + ')'
-		else:
-			list_eq = self.equation_str
+		list_eq = self.equation_str.split('=')[0] + '-' + '(' + self.equation_str.split('=')[1] + ')'
+		list_eq = list_eq.replace('(+', '(0+').replace('(-', '(0-')
 		j = 0
 		while j < len(list_eq):
 			n = ''
@@ -118,13 +120,8 @@ class Equation:
 						e.left = X(factor=0, power=0)
 					else:
 						e.left = output_stack.pop()
-					if e.oper == '-':
-						e.right = -1.0 * e.right
-						e.oper = '+'
 					e.evaluate()
 					output_stack.append(e.value)
-					# ft_print_tree(e.value)
-					# print('')
 			# ft_print_tree(e.value)
 			complete_newtree(new_tree, e.value)
 			return sorted(new_tree)
@@ -170,7 +167,6 @@ class Equation:
 			return None
 
 		new_tree = reduce_intermediate()
-		print(new_tree)
 		reduce_final(new_tree)
 		reduced_equation()
 
