@@ -25,8 +25,8 @@ class Equation:
 		self.flag_h = flag
 
 	def parsing_errors(self):
-		if '=' not in self.equation_str:
-			ft_error("Syntax error : please provide a valid equation.")
+		# if '=' not in self.equation_str:
+		# 	ft_error("Syntax error : please provide a valid equation.")
 		self.equation_str = self.equation_str.replace(' ','')
 		permission = set([e for e in dic_precedence.keys()] + [')', '(', 'X', '.'])
 		if self.equation_str[0] == '*' or self.equation_str[0] == '/':
@@ -56,41 +56,65 @@ class Equation:
 			for c in e:
 				if isinstance(c, Operator):
 					print(f"{spacing} {c.oper}")
-					ft_print_tree(c.elements, spacing)
+					ft_print_tree(c.elements, spacing = spacing + ' ')
 				else:
 					print(f"{spacing} {c}")
-					return
 
-		def recursive_built(equation, o):
+		def recursive_built(equation, o=None):
+			print("============ new recursive ============")
+			print(f"equation : {equation}")
+			print(f"o : oper : {o}")
 			if not equation:
 				return o
 			j = 0
 			while j < len(equation):
 				n = ''
+				neg = -1.0 if (o and o.oper == '-') else 1.0
 				while j < len(equation) and ('0' <= equation[j] <= '9' or equation[j] == '.'):
 					n = n + equation[j]
 					j += 1
 				if n:
 					j -= 1
-					o.elements.append(X(factor=float(n), power=0.0))
+					elem = X(factor=neg * float(n), power=0.0)
+					if o:
+						o.elements.append(elem)
 				elif equation[j] == 'X':
-					o.elements.append(X())
+					elem = X(factor=neg)
+					if o:
+						o.elements.append(elem)
 				elif equation[j] in dic_precedence.keys():
-					if equation[j] == o.oper:
-						j += 1
-						continue
-					elif dic_precedence[o.oper] < dic_precedence[equation[j]]:
-						o.elements.append(recursive_built(equation[j + 1:], Operator(equation[j])))
-					else:
-						new_oper = Operator(equation[j])
-						new_oper.elements.append(o)
-						return recursive_built(equation[j + 1:], new_oper)
-				j += 1
+					if not o:
+						o = Operator(equation[j])
+						o.elements.append(elem)
+					elif equation[j] != o.oper:
+						new_o = recursive_built(equation[j + 1:], Operator(equation[j]))
+						if new_o.oper == '-':
+							new_o.oper = '+'
+						if o.oper == new_o.oper:
+							o.elements = o.elements + new_o.elements
+							return o
+						elif dic_precedence[o.oper] <= dic_precedence[new_o.oper]:
+							if o.elements and new_o.oper != '-':
+								new_o.elements.appendleft(o.elements.pop())
+							o.elements.append(new_o)
+							return o
+						else:
+							new_o.elements.appendleft(o)
+							return new_o
 
+				j += 1
+			if o.oper == '-':
+				o.oper = '+'
 			return o
 
-		clean_eq = self.equation_str.split('=')[0] + '-' + '(' + self.equation_str.split('=')[1] + ')'
-		self.tree = recursive_built(clean_eq, Operator('+'))
+		if '=' in self.equation_str:
+			clean_eq = self.equation_str.split('=')[0] + '-' + '(' + self.equation_str.split('=')[1] + ')'
+		else:
+			clean_eq = self.equation_str
+		self.tree = recursive_built(clean_eq)
+
+		print("final tree====================")
+		print(self.tree)
 		print(self.tree.elements)
 		ft_print_tree(self.tree.elements)
 		return None

@@ -1,6 +1,7 @@
 
-import X_class
+from collections import deque
 
+import X_class
 
 class Operator:
 	"""
@@ -20,7 +21,7 @@ class Operator:
 
 	def __init__(self, oper):
 		self.oper = oper
-		self.elements = []
+		self.elements = deque()
 		self.value = None
 
 	def evaluate(self):
