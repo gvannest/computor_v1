@@ -61,15 +61,12 @@ class Equation:
 					print(f"{spacing} {c}")
 
 		def recursive_built(equation, o=None):
-			print("============ new recursive ============")
-			print(f"equation : {equation}")
-			print(f"o : oper : {o}")
 			if not equation:
 				return o
 			j = 0
+			neg = -1.0 if (o and o.oper == '-') else 1.0
 			while j < len(equation):
 				n = ''
-				neg = -1.0 if (o and o.oper == '-') else 1.0
 				while j < len(equation) and ('0' <= equation[j] <= '9' or equation[j] == '.'):
 					n = n + equation[j]
 					j += 1
@@ -85,7 +82,9 @@ class Equation:
 				elif equation[j] in dic_precedence.keys():
 					if not o:
 						o = Operator(equation[j])
-						o.elements.append(elem)
+						if elem:
+							o.elements.append(elem)
+							elem = None
 					elif equation[j] != o.oper:
 						new_o = recursive_built(equation[j + 1:], Operator(equation[j]))
 						if new_o.oper == '-':
