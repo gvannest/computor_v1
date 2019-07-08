@@ -93,7 +93,7 @@ class Equation:
 							o.elements = o.elements + new_o.elements
 							return o
 						elif dic_precedence[o.oper] <= dic_precedence[new_o.oper]:
-							if o.elements and new_o.oper != '-':
+							if o.elements:
 								new_o.elements.appendleft(o.elements.pop())
 							o.elements.append(new_o)
 							return o
