@@ -131,7 +131,7 @@ class Equation:
 						e.left = output_stack.pop()
 					e.evaluate()
 					output_stack.append(e.value)
-			# ft_print_tree(e.value)
+			ft_print_tree(e.value)
 			complete_newtree(new_tree, e.value)
 			return new_tree
 
