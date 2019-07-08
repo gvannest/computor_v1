@@ -1,6 +1,8 @@
 
 import X_class
 
+from utils import ft_error
+
 
 class Operator:
 	"""
@@ -43,7 +45,10 @@ class Operator:
 			self.value = self.left * self.right
 
 		def ft_div():
-			self.value = self.left / self.right
+			try:
+				self.value = self.left / self.right
+			except TypeError as e:
+				ft_error("Equation non reductible et non solvable.")
 
 		def ft_pow():
 			if isinstance(self.right, X_class.X):
@@ -80,6 +85,8 @@ class Operator:
 		return -1.0 * self + other
 
 	def __pow__(self, other):
+		if other % 1.0:
+			ft_error("Error : power of operations must be integer.")
 		if other == 1:
 			return self
 		elif isinstance(other, float):

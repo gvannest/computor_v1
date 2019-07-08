@@ -1,3 +1,5 @@
+import sys
+
 from collections import deque
 
 from utils import dic_precedence, ft_error
@@ -18,6 +20,7 @@ class Equation:
 	"""
 
 	def __init__(self, line='', flag=False):
+		self.eq_init = ''
 		self.equation_str = line
 		self.tree = []
 		self.reduced_tree = deque()
@@ -27,6 +30,7 @@ class Equation:
 	def parsing_errors(self):
 		if '=' not in self.equation_str:
 			ft_error("Syntax error : please provide a valid equation.")
+		self.eq_init = self.equation_str
 		self.equation_str = self.equation_str.replace(' ','')
 		permission = set([e for e in dic_precedence.keys()] + [')', '(', 'X', '.'])
 		if self.equation_str[0] == '*' or self.equation_str[0] == '/':
@@ -41,7 +45,7 @@ class Equation:
 				if self.equation_str[i] in dic_precedence.keys() and self.equation_str[i + 1] in dic_precedence.keys():
 					if not (self.equation_str[i] == '=' and self.equation_str[i + 1] in ['+', '-']):
 						ft_error("Syntax error : two operators side by side which cannot be combined.")
-				if self.equation_str[i] in ['(', ')'] and self.equation_str[i + 1] in dic_precedence.keys():
+				if self.equation_str[i] in ['('] and self.equation_str[i + 1] in dic_precedence.keys():
 					if not self.equation_str[i + 1] in ['+', '-', '=']:
 						ft_error("Syntax error : two operators side by side which cannot be combined.")
 			else:
@@ -152,15 +156,17 @@ class Equation:
 
 		def reduced_equation():
 			for i,e in enumerate(self.reduced_tree):
+				if self.flag_h and not e.factor:
+					continue
 				if not e.factor % 1:
 					e.factor = int(e.factor)
 				if not e.power % 1:
 					e.power = int(e.power)
-				self.reduced_str += e.__str__()
-				if i != len(self.reduced_tree) - 1:
-					self.reduced_str += ' + '
-				else:
-					self.reduced_str += ' = 0'
+				if i == 0:
+					self.reduced_str += e.__str__()
+				else :
+					self.reduced_str += ' + ' + e.__str__()
+			self.reduced_str += ' = 0'
 			self.reduced_str = self.reduced_str.replace('+ -', '- ')
 			if self.flag_h:
 				self.reduced_str = self.reduced_str.replace(' * X^0', '').replace('X^1', 'X').replace('1 * ', '')
@@ -171,5 +177,6 @@ class Equation:
 		reduced_equation()
 
 		return None
+
 
 
