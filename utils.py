@@ -6,9 +6,8 @@ dic_precedence = {
 	'/': 4,
 	'-': 8,
 	'^': 9,
-	'=': 10,
+	'=': 11,
 }
-
 
 def ft_error(message):
 	print(message)

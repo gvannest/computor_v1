@@ -41,7 +41,7 @@ class Equation:
 				if self.equation_str[i] in dic_precedence.keys() and self.equation_str[i + 1] in dic_precedence.keys():
 					if not (self.equation_str[i] == '=' and self.equation_str[i + 1] in ['-']):
 						ft_error("Syntax error : two operators side by side which cannot be combined.")
-				if self.equation_str[i] in ['(', ')'] and self.equation_str[i + 1] in dic_precedence.keys():
+				if self.equation_str[i] in ['('] and self.equation_str[i + 1] in dic_precedence.keys():
 					if not self.equation_str[i + 1] in ['-', '=']:
 						ft_error("Syntax error : two operators side by side which cannot be combined.")
 			else:
@@ -79,16 +79,24 @@ class Equation:
 					elem = X(factor=neg)
 					if o:
 						o.elements.append(elem)
-				elif equation[j] in dic_precedence.keys():
-					if not o:
+				elif equation[j] in dic_precedence.keys() or equation[j] == '(':
+					if not o and equation[j] != '(':
 						o = Operator(equation[j])
 						if elem:
 							o.elements.append(elem)
 							elem = None
 					elif equation[j] != o.oper:
-						new_o = recursive_built(equation[j + 1:], Operator(equation[j]))
-						if new_o.oper == '-':
-							new_o.oper = '+'
+						if equation[j] == '(':
+							i, new_o = recursive_built(equation[j + 1:], o)
+							if o.oper == new_o.oper:
+								o.elements = o.elements + new_o.elements
+							else:
+								o.elements.append(new_o)
+							j = j + 1 + i
+						else:
+							new_o = recursive_built(equation[j + 1:], Operator(equation[j]))
+						new_o.oper = '+' if new_o.oper == '-' else new_o.oper
+						o.oper = '+' if o.oper == '-' else o.oper
 						if o.oper == new_o.oper:
 							o.elements = o.elements + new_o.elements
 							return o
@@ -100,6 +108,8 @@ class Equation:
 						else:
 							new_o.elements.appendleft(o)
 							return new_o
+				elif equation[j] == ')':
+					return j, o
 
 				j += 1
 			if o.oper == '-':
