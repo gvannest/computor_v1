@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="b2facd52-3d21-4007-b5d1-6ec13a6d6134" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/computor" beforeDir="false" afterPath="$PROJECT_DIR$/computor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/equation.py" beforeDir="false" afterPath="$PROJECT_DIR$/equation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/inputs/test_hard.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/inputs/test_hard.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/inputs/test_simple.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/inputs/test_simple.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,18 +52,22 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/tests/inputs/test_simple.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="75">
-                  <caret line="5" selection-start-line="5" selection-end-line="5" selection-end-column="21" />
+                <state relative-caret-position="330">
+                  <caret line="22" selection-start-line="22" selection-end-line="22" />
                 </state>
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tests/inputs/test_spec.txt">
-              <provider selected="true" editor-type-id="text-editor" />
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="90">
+                  <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+                </state>
+              </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
@@ -98,11 +101,11 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/equation.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="67">
-                  <caret line="177" column="29" lean-forward="true" selection-start-line="177" selection-start-column="29" selection-end-line="177" selection-end-column="29" />
+                <state relative-caret-position="538">
+                  <caret line="208" column="33" selection-start-line="208" selection-start-column="33" selection-end-line="208" selection-end-column="33" />
                   <folding>
                     <element signature="e#0#6#0" expanded="true" />
                   </folding>
@@ -119,7 +122,7 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tests/outputs/output_test_simple.txt">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="330">
@@ -163,7 +166,6 @@
         <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/tests/test_simple.txt" />
         <option value="$PROJECT_DIR$/tests/inputs/other.txt" />
-        <option value="$PROJECT_DIR$/tests/inputs/test_simple.txt" />
         <option value="$PROJECT_DIR$/tests/outputs/output_test_simple.txt" />
         <option value="$PROJECT_DIR$/X_class.py" />
         <option value="$PROJECT_DIR$/tests/outputs/output_test_hard.txt" />
@@ -171,6 +173,8 @@
         <option value="$PROJECT_DIR$/oper.py" />
         <option value="$PROJECT_DIR$/tests/inputs/test_hard.txt" />
         <option value="$PROJECT_DIR$/computor" />
+        <option value="$PROJECT_DIR$/tests/inputs/test_spec.txt" />
+        <option value="$PROJECT_DIR$/tests/inputs/test_simple.txt" />
         <option value="$PROJECT_DIR$/equation.py" />
       </list>
     </option>
@@ -285,12 +289,12 @@
       <workItem from="1562142723494" duration="21606000" />
       <workItem from="1562226466632" duration="11159000" />
       <workItem from="1562586406497" duration="1157000" />
-      <workItem from="1562588105943" duration="13023000" />
+      <workItem from="1562588105943" duration="14214000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="83329000" />
+    <option name="totallyTimeSpent" value="84520000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -304,7 +308,7 @@
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="2560" height="1440" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13423352" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13423352" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -318,7 +322,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.47883213" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.47883213" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.329927" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -416,16 +420,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/equation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="67">
-          <caret line="177" column="29" lean-forward="true" selection-start-line="177" selection-start-column="29" selection-end-line="177" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#6#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/outputs/output_test_simple.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -433,10 +427,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/inputs/test_spec.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/inputs/test_simple.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" selection-end-column="21" />
+        <state relative-caret-position="330">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/equation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="538">
+          <caret line="208" column="33" selection-start-line="208" selection-start-column="33" selection-end-line="208" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#6#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

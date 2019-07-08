@@ -179,9 +179,9 @@ class Equation:
 		a = 0
 		b = 0
 		c = 0
+		if self.degree > 2:
+			ft_error("This equation is of a degree higher than 2. This algorithm is not built to solve it.")
 		for k,v in self.reduced_elem.items():
-			if k > 2:
-				ft_error("This equation is of a degree higher than 2. This algorithm is not built to solve it.")
 			if k == 2:
 				a = v.factor
 			elif k == 1:
@@ -189,7 +189,7 @@ class Equation:
 			elif k == 0:
 				c = v.factor
 		if not a and not b and not c:
-			print("Always true. Infinity of possible values for X.")
+			print("Always true. Infinity of possible values for X in the set of real numbers.")
 			sys.exit(0)
 		elif not a and not b and c:
 			ft_error("Impossible equation.")
@@ -205,11 +205,15 @@ class Equation:
 				self.solution1 = (-b - sqrt(self.delta)) / (2 * a)
 				self.solution2 = (-b + sqrt(self.delta)) / (2 * a)
 			elif self.delta < 0:
-				self.solution1 = f"({-b} - i * {sqrt(-self.delta)}) / {2 * a}"
-				self.solution2 = f"({-b} + i * {sqrt(-self.delta)}) / {2 * a}"
-		if not self.solution1 % 1:
+				if not self.flag_h:
+					self.solution1 = f"({b} - i * {sqrt(-self.delta)}) / {2 * a}"
+					self.solution2 = f"({b} + i * {sqrt(-self.delta)}) / {2 * a}"
+				elif not b:
+					self.solution1 = f"(-i * {sqrt(-self.delta)}) / {2 * a}"
+					self.solution2 = f"(i * {sqrt(-self.delta)}) / {2 * a}"
+		if isinstance(self.solution1, float) and not self.solution1 % 1:
 			self.solution1 = int(self.solution1)
-		if self.solution2 and not self.solution2 % 1:
+		if self.solution2 and isinstance(self.solution2, float) and not self.solution2 % 1:
 			self.solution2 = int(self.solution2)
 		return None
 
