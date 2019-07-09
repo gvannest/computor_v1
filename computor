@@ -11,10 +11,10 @@ def ft_argparser():
 	parser.add_argument("input", type=str, help="Equation to be reduced and solved")
 	parser.add_argument("-r", "--human_readable", action="store_true",
 						help="Everything in the title.")
-	# parser.add_argument("-u", "--undetermined", action="store_true",
-	# 					help="Undetermined mode, where the user can clarify undetermined facts")
-	# parser.add_argument("-v", "--verbose", action="store_true",
-	# 					help="Verbose mode. Outputs the rules leading to a particular conclusion")
+	parser.add_argument("-v", "--visu", action="store_true",
+						help="Allows for visualizing the tree in the terminal window.")
+	parser.add_argument("-n", "--neg", action="store_true",
+						help="Tries to solve for negative degrees")
 	args = parser.parse_args()
 	return args
 
@@ -39,12 +39,12 @@ def main(args):
 	if not args.input:
 		print("Error : please provide a valid string as argument.")
 		sys.exit(0)
-	eq = Equation(line=args.input, flag=args.human_readable)
+	eq = Equation(line=args.input, flag_h=args.human_readable, flag_v=args.visu, flag_n=args.neg)
 	eq.parsing_errors()
 	eq.build_trees()
 	eq.reduce_equation()
 	print(f"Reduced form : {eq.reduced_str}")
-	print(f"Polynomial degree : {eq.degree}")
+	print(f"Polynomial degree : {eq.max_degree}")
 	eq.solve_equation()
 	print_final_results(eq)
 

@@ -26,6 +26,9 @@ class Operator:
 		self.right = None
 		self.value = None
 
+	def _oper(self):
+		return self.oper
+
 	def evaluate(self):
 
 		def ft_check_powtype():
@@ -45,10 +48,7 @@ class Operator:
 			self.value = self.left * self.right
 
 		def ft_div():
-			try:
-				self.value = self.left / self.right
-			except TypeError as e:
-				ft_error("Equation non reductible et non solvable.")
+			self.value = self.left / self.right
 
 		def ft_pow():
 			if isinstance(self.right, X_class.X):
@@ -99,6 +99,12 @@ class Operator:
 
 	def __rmul__(self, other):
 		return self * other
+
+	def __truediv__(self, other):
+		if isinstance(other, X_class.X) or isinstance(other, float):
+			return self.left / other + self.right / other
+		else:
+			ft_error("Equation non reductible et non solvable.")
 
 	def __str__(self):
 		return f"{self.oper}"
