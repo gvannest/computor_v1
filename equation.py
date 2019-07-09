@@ -168,7 +168,6 @@ class Equation:
 					e.evaluate()
 					output_stack.append(e.value)
 			if self.flag_v:
-				ft_print_tree(e)
 				printBTree(e, lambda n: (n._oper(), n.left, n.right))
 			complete_newtree(new_tree, e.value)
 			return new_tree
