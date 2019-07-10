@@ -6,7 +6,6 @@ from math import sqrt
 from utils import dic_precedence, ft_error
 from X_class import X
 from oper import Operator
-from visu import printBTree
 
 
 class Equation:
@@ -21,27 +20,35 @@ class Equation:
 		- tree : parsed tree corresponding to the equation
 	"""
 
-	def __init__(self, line='', flag_h=False, flag_v=False, flag_n=False):
+	def __init__(self, line='', flag_h=False, flag_t=False, flag_n=False, flag_v=False):
 		self.eq_init = ''
 		self.equation_str = line
 		self.tree = []
+		self.tree_for_printing = None
+
 		self.reduced_elem = {}
 		self.reduced_str = ''
 		self.new_reduced_str= ''
+
 		self.max_degree = 0
 		self.min_degree = 0
 		self.delta = None
 		self.solution1 = None
 		self.solution2 = None
+
 		self.flag_h = flag_h
-		self.flag_v = flag_v
+		self.flag_t = flag_t
 		self.flag_n = flag_n
+		self.flag_v = flag_v
 
 	def parsing_errors(self):
-		if '=' not in self.equation_str:
-			ft_error("Syntax error : please provide a valid equation.")
 		self.eq_init = self.equation_str
 		self.equation_str = self.equation_str.replace(' ','')
+		tmp_lst = self.equation_str.split('=')
+		if len(tmp_lst) != 2:
+			ft_error("Syntax error : please provide a valid equation.")
+		elif not len(tmp_lst[0]) or not len(tmp_lst[1]):
+			ft_error("Syntax error : please provide a valid equation.")
 		permission = set([e for e in dic_precedence.keys()] + [')', '(', 'X', '.'])
 		if self.equation_str[0] == '*' or self.equation_str[0] == '/':
 			ft_error("Syntax error : first element is a wrong operator (ony + and - allowed)")
@@ -52,6 +59,9 @@ class Equation:
 				if (self.equation_str[i] == '.' and not self.equation_str[i + 1].isdigit())\
 					or (self.equation_str[i + 1] == '.' and not self.equation_str[i].isdigit()):
 					ft_error("Syntax error : need a digit before and after a dot.")
+				if (self.equation_str[i].isdigit() and self.equation_str[i + 1] == 'X')\
+					or (self.equation_str[i + 1].isdigit() and self.equation_str[i] == 'X'):
+					ft_error("Syntax error : an operator has to precede or succeed an X element.")
 				if self.equation_str[i] in dic_precedence.keys() and self.equation_str[i + 1] in dic_precedence.keys():
 					if not (self.equation_str[i] == '=' and self.equation_str[i + 1] in ['+', '-']):
 						ft_error("Syntax error : two operators side by side which cannot be combined.")
@@ -62,6 +72,7 @@ class Equation:
 				if self.equation_str[i] in dic_precedence.keys() or self.equation_str[i] == '.':
 					ft_error("Syntax error : last element is not a valid token to end the equation.")
 		return None
+
 
 	def build_trees(self):
 		"""Method which builds the left and right trees from the input string, using a syntactic binary tree"""
@@ -102,7 +113,25 @@ class Equation:
 
 		return None
 
+	@staticmethod
+	def ft_print_tree(e, spacing='', right=False):
+		if (isinstance(e, X) or isinstance(e, float)) and right:
+			print(f"{spacing}  {e}")
+			return
+		elif (isinstance(e, X) or isinstance(e, float)) and not right:
+			print(f"{spacing} |  {e}")
+			return
+		print(f"{spacing}  {e}")
+		print(f"{spacing}  |_left : ")
+		Equation.ft_print_tree(e.left, spacing + ' ')
+		print(f"{spacing}  |_right : ")
+		Equation.ft_print_tree(e.right, spacing + ' ', right=True)
+
 	def ft_getdegree(self):
+		for key in sorted(list(self.reduced_elem.keys())):
+			if self.reduced_elem[key].factor != 0:
+				self.max_degree = key
+				break
 		for k, v in self.reduced_elem.items():
 			if k < self.min_degree and v.factor:
 				self.min_degree = k
@@ -143,20 +172,11 @@ class Equation:
 				complete_newtree(new_tree, e.right)
 			return None
 
-		def ft_print_tree(e, spacing=''):
-			if isinstance(e, X):
-				print(f"{spacing} {e}")
-				return
-			print(f"{spacing} {e}")
-			print(f"{spacing} -> left : ")
-			ft_print_tree(e.left, spacing + ' ')
-			print(f"{spacing} -> right : ")
-			ft_print_tree(e.right, spacing + ' ')
-
 		def reduce_intermediate():
 			output_stack = deque()
 			new_tree = deque()
-			for e in self.tree:
+			count = 0
+			for i, e in enumerate(self.tree):
 				if isinstance(e, float) or isinstance(e, X):
 					output_stack.append(e)
 				if isinstance(e, Operator):
@@ -166,18 +186,33 @@ class Equation:
 					else:
 						e.left = output_stack.pop()
 					e.evaluate()
+					if self.flag_v and i != len(self.tree) - 1:
+						if not count:
+							print("\nOperations carried out during tree traversal")
+							print("=================================================")
+							count = 1
+						Equation.ft_print_tree(e)
+						print("-------------------------------------------------")
 					output_stack.append(e.value)
-			if self.flag_v:
-				printBTree(e, lambda n: (n._oper(), n.left, n.right))
+			if self.flag_t:
+				self.tree_for_printing = e
 			complete_newtree(new_tree, e.value)
 			return new_tree
 
 		def complete_dict(new_tree):
+			count = 0
 			for e in new_tree:
 				if e.power not in self.reduced_elem.keys():
 					self.reduced_elem[e.power] = e
 				else:
 					self.reduced_elem[e.power] = self.reduced_elem[e.power] + e
+					if self.flag_v:
+						if not count:
+							print("\nOperations carried out during final combination")
+							print("=================================================")
+							count = 1
+						print(f"{self.reduced_elem[e.power]} + {e} = {self.reduced_elem[e.power]}")
+						print("-------------------------------------------------")
 			return None
 
 		new_tree = reduce_intermediate()
@@ -226,25 +261,26 @@ class Equation:
 			if self.delta == 0:
 				self.solution1 = -b / (2 * a)
 			elif self.delta > 0:
-				self.solution1 = (-b - sqrt(self.delta)) / (2 * a)
-				self.solution2 = (-b + sqrt(self.delta)) / (2 * a)
+				sq_delta_pos = sqrt(self.delta)
+				if not sq_delta_pos % 1:
+					sq_delta_pos = int(sq_delta_pos)
+				self.solution1 = (-b - sq_delta_pos) / (2 * a)
+				self.solution2 = (-b + sq_delta_pos) / (2 * a)
 			elif self.delta < 0:
-				if not self.flag_h:
-					self.solution1 = f"({b} - i * {sqrt(-self.delta)}) / {2 * a}"
-					self.solution2 = f"({b} + i * {sqrt(-self.delta)}) / {2 * a}"
-				elif not b:
-					self.solution1 = f"(-i * {sqrt(-self.delta):.2f}) / {2 * a}"
-					self.solution2 = f"(i * {sqrt(-self.delta):.2f}) / {2 * a}"
+				sq_delta = sqrt(-self.delta)
+				if not sq_delta % 1:
+					sq_delta = int(sq_delta)
+				if not b:
+					self.solution1 = f"(-i * {sq_delta}) / {2 * a}"
+					self.solution2 = f"(i * {sq_delta}) / {2 * a}"
 				else:
-					self.solution1 = f"({b} - i * {sqrt(-self.delta):.2f}) / {2 * a}"
-					self.solution2 = f"({b} + i * {sqrt(-self.delta):.2f}) / {2 * a}"
+					self.solution1 = f"({b} - i * {sq_delta}) / {2 * a}"
+					self.solution2 = f"({b} + i * {sq_delta}) / {2 * a}"
 		if isinstance(self.solution1, float) and not self.solution1 % 1:
 			self.solution1 = int(self.solution1)
-		if self.solution2 and isinstance(self.solution2, float) and not self.solution2 % 1:
+		if self.solution2 is not None and isinstance(self.solution2, float) and not self.solution2 % 1:
 			self.solution2 = int(self.solution2)
 		return None
-
-
 
 
 

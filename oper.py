@@ -51,6 +51,8 @@ class Operator:
 			self.value = self.left / self.right
 
 		def ft_pow():
+			if (isinstance(self.right, X_class.X) and self.right.power) or isinstance(self.right, Operator):
+				ft_error("Error : Invalid power term.")
 			if isinstance(self.right, X_class.X):
 				self.right = float(self.right.factor)
 			self.value = self.left ** self.right

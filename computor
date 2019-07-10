@@ -11,8 +11,10 @@ def ft_argparser():
 	parser.add_argument("input", type=str, help="Equation to be reduced and solved")
 	parser.add_argument("-r", "--human_readable", action="store_true",
 						help="Everything in the title.")
-	parser.add_argument("-v", "--visu", action="store_true",
-						help="Allows for visualizing the tree in the terminal window.")
+	parser.add_argument("-t", "--tree", action="store_true",
+						help="Allows for vizualizing the tree in the terminal window.")
+	parser.add_argument("-v", "--verbose", action="store_true",
+						help="Prints out each calculation in reducing and solving the equation")
 	parser.add_argument("-n", "--neg", action="store_true",
 						help="Tries to solve for negative degrees")
 	args = parser.parse_args()
@@ -35,15 +37,20 @@ def print_final_results(eq):
 
 	return None
 
+
 def main(args):
 	if not args.input:
 		print("Error : please provide a valid string as argument.")
 		sys.exit(0)
-	eq = Equation(line=args.input, flag_h=args.human_readable, flag_v=args.visu, flag_n=args.neg)
+	eq = Equation(line=args.input, flag_h=args.human_readable, flag_t=args.tree, flag_n=args.neg, flag_v=args.verbose)
 	eq.parsing_errors()
 	eq.build_trees()
 	eq.reduce_equation()
-	print(f"Reduced form : {eq.reduced_str}")
+	if args.tree:
+		print("\nTree before resolution")
+		print("=================================================")
+		Equation.ft_print_tree(eq.tree_for_printing)
+	print(f"\nReduced form : {eq.reduced_str}")
 	print(f"Polynomial degree : {eq.max_degree}")
 	eq.solve_equation()
 	print_final_results(eq)
