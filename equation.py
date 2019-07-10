@@ -33,8 +33,11 @@ class Equation:
 		self.max_degree = 0
 		self.min_degree = 0
 		self.delta = None
+		self.delta_str = ''
 		self.solution1 = None
+		self.solution1_str = ''
 		self.solution2 = None
+		self.solution2_str = ''
 
 		self.flag_h = flag_h
 		self.flag_t = flag_t
@@ -87,9 +90,9 @@ class Equation:
 				j += 1
 			if n:
 				j -= 1
-				self.tree.append(X(factor=float(n), power=0.0))
+				self.tree.append(X(factor=float(n), power=0.0, flag_h=self.flag_h))
 			elif list_eq[j] == 'X':
-				self.tree.append(X())
+				self.tree.append(X(flag_h=self.flag_h))
 			elif list_eq[j] in dic_precedence.keys():
 				while operator_stack and operator_stack[-1] != '('\
 						and dic_precedence[operator_stack[-1].oper] >= dic_precedence[list_eq[j]]:
@@ -182,7 +185,7 @@ class Equation:
 				if isinstance(e, Operator):
 					e.right = output_stack.pop()
 					if not output_stack:
-						e.left = X(factor=0, power=0)
+						e.left = X(factor=0, power=0, flag_h=self.flag_h)
 					else:
 						e.left = output_stack.pop()
 					e.evaluate()
@@ -221,21 +224,33 @@ class Equation:
 		self.ft_getdegree()
 		return None
 
+	def num_format(self, n=None):
+		if n is not None:
+			if isinstance(n, float) and not n % 1: n = int(n)
+			n_str = f"{n:.3f}" if (isinstance(n, float) and self.flag_h) else f"{n}"
+			return n_str
+
 	def solve_equation(self):
+
+		def deal_negatives():
+			new_dico_elem = {}
+			for k, v in self.reduced_elem.items():
+				new_dico_elem[k - self.min_degree] = v * X(power=-self.min_degree, flag_h=self.flag_h)
+			self.reduced_elem = new_dico_elem
+			self.new_reduced_str = self.reduced_equation_str()
+			self.ft_getdegree()
+			print(
+				"There is at least one degree strictly lower than 0. Therefore, we multiply each element by the lowest degree to try to solve this equation.")
+			print(f"New reduced form : {self.new_reduced_str}")
+			print(f"Polynomial degree of the new equation : {self.max_degree}")
+			return None
+
 		a = 0
 		b = 0
 		c = 0
 		if self.flag_n:
 			if self.min_degree < 0:
-				new_dico_elem = {}
-				for k,v in self.reduced_elem.items():
-					new_dico_elem[k - self.min_degree] = v * X(power=-self.min_degree)
-				self.reduced_elem = new_dico_elem
-				self.new_reduced_str = self.reduced_equation_str()
-				self.ft_getdegree()
-				print("There is at least one degree strictly lower than 0. Therefore, we multiply each element by the lowest degree to try to solve this equation.")
-				print(f"New reduced form : {self.new_reduced_str}")
-				print(f"Polynomial degree of the new equation : {self.max_degree}")
+				deal_negatives()
 		elif self.min_degree < 0:
 			ft_error("There exists a degree strictly lower than 0. This cannot be solved. Use -n flag to try to solve this equation.")
 		if self.max_degree > 2:
@@ -256,30 +271,59 @@ class Equation:
 			self.solution1 = 0
 		elif not a and b and c:
 			self.solution1 = -c / b
+			self.solution1_str = f"X = - ({self.num_format(c)}) / {self.num_format(b)} = {self.num_format(self.solution1)}"
 		else:
 			self.delta = b ** 2 - 4 * a * c
+			self.delta_str = f"Δ = {self.num_format(b)}^2 - 4 * {self.num_format(a)} * {self.num_format(c)} = {self.num_format(self.delta)}"
+
 			if self.delta == 0:
 				self.solution1 = -b / (2 * a)
+				self.solution1_str = f"X = - ({self.num_format(b)}) / (2 * {self.num_format(a)}) = {self.num_format(self.solution1)}"
+
 			elif self.delta > 0:
 				sq_delta_pos = sqrt(self.delta)
-				if not sq_delta_pos % 1:
-					sq_delta_pos = int(sq_delta_pos)
 				self.solution1 = (-b - sq_delta_pos) / (2 * a)
 				self.solution2 = (-b + sq_delta_pos) / (2 * a)
+				self.solution1_str = (f"X1 = (- ({self.num_format(b)}) - sqrt({self.num_format(self.delta)}) / (2 * {a}) = "
+				f"(- ({self.num_format(b)}) - {self.num_format(sq_delta_pos)} / (2 * {self.num_format(a)}) = {self.num_format(self.solution1)}")
+				self.solution2_str = (f"X2 = (- ({self.num_format(b)}) + sqrt({self.num_format(self.delta)}) / (2 * {self.num_format(a)}) = "
+				f"(- ({self.num_format(b)}) + {self.num_format(sq_delta_pos)} / (2 * {self.num_format(a)}) = {self.num_format(self.solution2)}")
+
 			elif self.delta < 0:
 				sq_delta = sqrt(-self.delta)
-				if not sq_delta % 1:
-					sq_delta = int(sq_delta)
 				if not b:
-					self.solution1 = f"(-i * {sq_delta}) / {2 * a}"
-					self.solution2 = f"(i * {sq_delta}) / {2 * a}"
+					self.solution1 = f"(-i * {self.num_format(sq_delta)}) / {2 * a}"
+					self.solution2 = f"(i * {self.num_format(sq_delta)}) / {2 * a}"
 				else:
-					self.solution1 = f"({b} - i * {sq_delta}) / {2 * a}"
-					self.solution2 = f"({b} + i * {sq_delta}) / {2 * a}"
-		if isinstance(self.solution1, float) and not self.solution1 % 1:
-			self.solution1 = int(self.solution1)
-		if self.solution2 is not None and isinstance(self.solution2, float) and not self.solution2 % 1:
-			self.solution2 = int(self.solution2)
+					self.solution1 = f"({self.num_format(-b)} - i * {self.num_format(sq_delta)}) / {self.num_format(2 * a)}"
+					self.solution2 = f"({self.num_format(-b)} + i * {self.num_format(sq_delta)}) / {self.num_format(2 * a)}"
+				self.solution1_str = (f"X1 = (- ({self.num_format(b)}) - i * sqrt({self.num_format(-self.delta)}) / (2 * {self.num_format(a)}) "
+				f"= {self.num_format(self.solution1)}")
+				self.solution2_str = (f"X2 = (- ({self.num_format(b)}) + i * sqrt({self.num_format(-self.delta)}) / (2 * {self.num_format(a)}) "
+				f"= {self.num_format(self.solution2)}")
+
+		return None
+
+	def print_final_results(self):
+		str1 = self.num_format(self.solution1)
+		str2 = self.num_format(self.solution2)
+		if self.delta is None:
+			print("The unique solution to the selfuation is:")
+			print(f"X = {str1}") if not self.flag_v else print(self.solution1_str)
+		elif self.delta == 0:
+			if self.flag_v: print(self.delta_str)
+			print("Discriminant is null. There is one double solution :")
+			print(f"X = {str1}") if not self.flag_v else print(self.solution1_str)
+		elif self.delta > 0:
+			if self.flag_v: print(self.delta_str)
+			print("Discriminant is strictly positive. The two real solutions are:")
+			print(f"X1 = {str1}\nX2 = {str2}") if not self.flag_v else print(f"{self.solution1_str}\n{self.solution2_str}")
+		elif self.delta < 0:
+			if self.flag_v: print(self.delta_str)
+			print("Discriminant is strictly negative. The two complex solutions are:")
+			print(f"X1 = {str1}\nX2 = {str2}") if not self.flag_v else print(f"{self.solution1_str}\n{self.solution2_str}")
+		print('')
+
 		return None
 
 

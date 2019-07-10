@@ -11,4 +11,43 @@ X/(3+X^2) = 2
 1 + X^(-X) = 0
 2X + X^(-2) = 0
 ''
-
+# ./computor ""
+# ./computor "="
+# ./computor "= 2"
+# ./computor "2 ="
+# ./computor "1*X^2 + 4*X^1 + 1*X^0 = 0" => normal
+# ./computor "1*X^2 + 4*X^1 + 1*X^0 + 2/3 = 0" => + fraction
+# ./computor "1*X^2 + 4*X^1 + 1*X^0 - 2/3  = 0" => - fraction
+# ./computor "1*X^2 + 4*X^1 + 1*X^0 + 5 * 2/3 = 0" => * fraction
+# ./computor "1*X^2 + 4*X^1 + 1*X^0 + 5 / (2/3) = 0" => / fraction
+# ./computor "1*X^2 + 4*X^(2-3) + 1*X^0 + 5 / (2/3) = 0" => ^ fraction
+# ./computor "1*X^2 + (4*X^2)/2 + 1*X^0 = 0" => operation / entier
+# ./computor "1*X^2 + 4*X^2 + 5 / (2+X) = 0" => entier / operation
+# ./computor "1*X^2 + (4*X^2)/2 + (2+X)/(2+X) = 0" => operation / operation
+# ./computor "1*X^2 + (4*X^2)/2 + (2+X)*(2+X) = 0" => operation * operation
+# ./computor "1*X^2 + (4*X^2)/2 + (2+X)*(3) = 0" => operation * entier
+# ./computor "1*X^2 + (4*X^2)/2 + (3)*(2+X) = 0" => entier * operation
+# ./computor "1*X2 + 4*X^1 + 1*X^0 = 0" => digit apres X (sans ^)
+# ./computor "2X^2 + 0*X^1 + 1*X^0 = 0" => digit avant X (sans *)
+# ./computor "1*X^2 + +2*X^1 + 1*X^0 = 0" => + suivi de +
+# ./computor "1*X^2 + -2*X^1 + 1*X^0 = 0" => + suivi de -
+# ./computor "1*X^2 - +1*X^1 + 1*X^0 = 0" => - suivi de +
+# ./computor "1*X^2 - -2*X^1 + 1*X^0 = 0" => - suivi de -
+# ./computor "1*X^2 +* 0*X^1 + 1*X^0 = 0" => + suivi de *
+# ./computor "1*X^2 +^ 0*X^1 + 1*X^0 = 0" => + suivi de ^
+# ./computor "1*X^2 +/ 0*X^1 + 1*X^0 = 0" => + suivi de /
+# ./computor "1*X^2 + (+1*X^1) + 1*X^0 = 0" => ( suivi de +
+# ./computor "1*X^2 + (-1*X^1) + 1*X^0 = 0" => ( suivi de -
+# ./computor "1*X^2 + (*1*X^1) + 1*X^0 = 0" => ( suivi de *
+# ./computor "1*X^2 + (^1*X^1) + 1*X^0 = 0" => ( suivi de ^
+# ./computor "1*X^2 + (/1*X^1) + 1*X^0 = 0" => ( suivi de /
+# ./computor "1*X^2 + (1*X^X) + 1*X^0 = 0" => X ^ X
+# ./computor "1*X^2 + (1*X ^ X + 2) + 1*X^0 = 0" => X ^ X + 2
+# ./computor "1*X^2 + (1*X ^ (X +2)) + 1*X^0 = 0" => X ^ (X +2)
+# ./computor "1*X^2 + (1*X ^ 2 + X) + 1*X^0 = 0" => X ^ 2 + X
+# ./computor "1*X^2 + (1*X ^ (2 + X)) + 1*X^0 = 0" => X ^ (2 + X)
+# ./computor "1*X^2 + (4*X^1 + 1*X^0 = 0" => pas de parenthese fermante
+# ./computor "1*X^2 + 4*X^1) + 1*X^0 = 0" => pas de parenthese ouvrante
+# ./computor "1=X^2 + 4*X^1 + 1*X^0 = 0" => 2 fois '='
+# ./computor "1*X^2 + 4*X^1 + 1**X^0 = 0" => 2 fois '*'
+# ./computor "1*X^2 + 4*X^1 + 1*X^0 + 2//3 = 0" => 2 fois '/'

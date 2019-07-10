@@ -21,23 +21,6 @@ def ft_argparser():
 	return args
 
 
-def print_final_results(eq):
-	if eq.delta is None:
-		print("The unique solution to the equation is:")
-		print(f"X = {eq.solution1}")
-	elif eq.delta == 0:
-		print("Discriminant is null. There is one double solution :")
-		print(f"X = {eq.solution1}")
-	elif eq.delta > 0:
-		print("Discriminant is strictly positive. The two real solutions are:")
-		print(f"X1 = {eq.solution1}\nX2 = {eq.solution2}")
-	elif eq.delta < 0:
-		print("Discriminant is strictly negative. The two complex solutions are:")
-		print(f"X1 = {eq.solution1}\nX2 = {eq.solution2}")
-
-	return None
-
-
 def main(args):
 	if not args.input:
 		print("Error : please provide a valid string as argument.")
@@ -51,9 +34,9 @@ def main(args):
 		print("=================================================")
 		Equation.ft_print_tree(eq.tree_for_printing)
 	print(f"\nReduced form : {eq.reduced_str}")
-	print(f"Polynomial degree : {eq.max_degree}")
+	print(f"Polynomial degree : {eq.max_degree}\n")
 	eq.solve_equation()
-	print_final_results(eq)
+	eq.print_final_results()
 
 	return None
 

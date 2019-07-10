@@ -4,12 +4,13 @@ from utils import ft_error
 
 class X:
 
-	def __init__(self, factor=1.0, power=1.0):
+	def __init__(self, factor=1.0, power=1.0, flag_h=False):
 		self.factor = factor
 		self.power = power
 		self.left = None
 		self.right = None
 		self.oper = ''
+		self.flag_h = flag_h
 
 	def _oper(self):
 		factor = str(int(self.factor)) if not self.factor % 1 else self.factor
@@ -33,7 +34,7 @@ class X:
 
 	def __add__(self, other):
 		if isinstance(other, X) and other.power == self.power:
-			new_obj = X()
+			new_obj = X(flag_h=self.flag_h)
 			new_obj.factor = other.factor + self.factor
 			new_obj.power = self.power
 			return new_obj
@@ -51,7 +52,7 @@ class X:
 
 	def __sub__(self, other):
 		if isinstance(other, X) and other.power == self.power:
-			new_obj = X()
+			new_obj = X(flag_h=self.flag_h)
 			new_obj.factor = self.factor - other.factor
 			new_obj.power = self.power
 			return new_obj
@@ -69,7 +70,7 @@ class X:
 
 	def __mul__(self, other):
 		if isinstance(other, X):
-			new_obj = X()
+			new_obj = X(flag_h=self.flag_h)
 			new_obj.factor = self.factor * other.factor
 			new_obj.power = self.power + other.power
 			return new_obj
@@ -83,7 +84,7 @@ class X:
 
 	def __truediv__(self, other):
 		if isinstance(other, X):
-			new_obj = X()
+			new_obj = X(flag_h=self.flag_h)
 			new_obj.factor = self.factor / other.factor
 			new_obj.power = self.power - other.power
 			return new_obj
@@ -97,7 +98,7 @@ class X:
 		return self / other
 
 	def __pow__(self, other):
-		new_obj = X()
+		new_obj = X(flag_h=self.flag_h)
 		if isinstance(other, float):
 			new_obj.factor = self.factor ** other
 			new_obj.power = self.power * other
@@ -128,10 +129,12 @@ class X:
 		return False
 
 	def __str__(self):
+		str_factor = f"{self.factor:.2f}" if isinstance(self.factor, float) and self.flag_h else f"{self.factor}"
+		str_power = f"{self.power:.2f}" if isinstance(self.power, float) and self.flag_h else f"{self.power}"
 		if self.power < 0:
-			return f"{self.factor} * X^({self.power})"
+			return f"{str_factor} * X^({str_power})"
 		else:
-			return f"{self.factor} * X^{self.power}"
+			return f"{str_factor} * X^{str_power}"
 
 	def __repr__(self):
 		return self.__str__()
