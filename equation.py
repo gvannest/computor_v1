@@ -1,4 +1,5 @@
 import sys
+import re
 
 from collections import deque
 from math import sqrt
@@ -45,37 +46,51 @@ class Equation:
 		self.flag_v = flag_v
 
 	def parsing_errors(self):
+		if not self.equation_str:
+			ft_error("Syntax error : please provide a valid equation.")
 		self.eq_init = self.equation_str
-		self.equation_str = self.equation_str.replace(' ','')
-		tmp_lst = self.equation_str.split('=')
-		if len(tmp_lst) != 2:
+		self.equation_str = self.equation_str.replace(' ', '')
+		if '=' not in self.equation_str:
 			ft_error("Syntax error : please provide a valid equation.")
-		elif not len(tmp_lst[0]) or not len(tmp_lst[1]):
-			ft_error("Syntax error : please provide a valid equation.")
-		permission = set([e for e in dic_precedence.keys()] + [')', '(', 'X', '.'])
-		if self.equation_str[0] == '*' or self.equation_str[0] == '/':
-			ft_error("Syntax error : first element is a wrong operator (ony + and - allowed)")
-		for i in range(len(self.equation_str)):
-			if self.equation_str[i] not in permission and not self.equation_str[i].isdigit():
-				ft_error("Syntax error : unauthorized token in equation.")
-			if i < len(self.equation_str) - 1:
-				if (self.equation_str[i] == '.' and not self.equation_str[i + 1].isdigit())\
-					or (self.equation_str[i + 1] == '.' and not self.equation_str[i].isdigit()):
-					ft_error("Syntax error : need a digit before and after a dot.")
-				if (self.equation_str[i].isdigit() and self.equation_str[i + 1] == 'X')\
-					or (self.equation_str[i + 1].isdigit() and self.equation_str[i] == 'X'):
-					ft_error("Syntax error : an operator has to precede or succeed an X element.")
-				if self.equation_str[i] in dic_precedence.keys() and self.equation_str[i + 1] in dic_precedence.keys():
-					if not (self.equation_str[i] == '=' and self.equation_str[i + 1] in ['+', '-']):
-						ft_error("Syntax error : two operators side by side which cannot be combined.")
-				if self.equation_str[i] in ['('] and self.equation_str[i + 1] in dic_precedence.keys():
-					if not self.equation_str[i + 1] in ['+', '-', '=']:
-						ft_error("Syntax error : two operators side by side which cannot be combined.")
-			else:
-				if self.equation_str[i] in dic_precedence.keys() or self.equation_str[i] == '.':
-					ft_error("Syntax error : last element is not a valid token to end the equation.")
-		return None
 
+		dic_error = {
+			r"(^=|=$|=.*=)": "Syntax error : please provide a valid equation.",
+			r"[^X\+0-9\(\)=\^\*\-\./]": "Syntax error : unauthorized token in equation.",
+			r"(^[\*\^/]|=[\*\^/])": "Syntax error : first element is a wrong operator (ony + and - allowed)",
+			r"[\*\^/\+\-=]$": "Syntax error : last element is not a valid token to end the equation.",
+			r"(\.[^0-9]|[^0-9]\.)": "Syntax error : need a digit before and after a dot.",
+			r"([0-9]X|X[0-9])": "Syntax error : an operator has to precede or succeed an X element.",
+			r"([=\(\-\+\^\*/][\*/\^]|[\*\^\+\-/\(]=|[\-\+\^\*/][\+\-\*/\^])":
+				"Syntax error : two operators side by side which cannot be combined.",
+			r"\(\)": "Syntax error : empty parentheses.",
+			r"(\([^\)]*=|.*=[^\(]*\))": "Syntax error : error in parentheses.",
+		}
+
+		for k, v in dic_error.items():
+			reg = re.compile(k)
+			if reg.search(self.equation_str):
+				ft_error(v)
+
+		# if re.search(r"(^=|=$|=.*=)", self.equation_str):
+		# 	ft_error("Syntax error : please provide a valid equation.")
+		# if re.search(r"[^X\+0-9\(\)=\^\*\-\.]", self.equation_str):
+		# 	ft_error("Syntax error : unauthorized token in equation.")
+		# if re.search(r"(^[\*\^/]|=[\*\^/])", self.equation_str):
+		# 	ft_error("Syntax error : first element is a wrong operator (ony + and - allowed)")
+		# if re.search(r"[\*\^/\+\-=]$", self.equation_str):
+		# 	ft_error("Syntax error : last element is not a valid token to end the equation.")
+		# if re.search(r"(\.[^0-9]|[^0-9]\.)", self.equation_str):
+		# 	ft_error("Syntax error : need a digit before and after a dot.")
+		# if re.search(r"([0-9]X|X[0-9])", self.equation_str):
+		# 	ft_error("Syntax error : an operator has to precede or succeed an X element.")
+		# if re.search(r"([=\(\-\+\^\*/][\*/\^]|[\*\^\+\-/\(]=|[\-\+\^\*/][\+\-\*/\^])", self.equation_str):
+		# 	ft_error("Syntax error : two operators side by side which cannot be combined.")
+		# if re.search(r"\(\)", self.equation_str):
+		# 	ft_error("Syntax error : empty parentheses.")
+		# if re.search(r"(\([^\)]*=|.*=[^\(]*\))", self.equation_str):
+		# 	ft_error("Syntax error : error in parentheses.")
+
+		return None
 
 	def build_trees(self):
 		"""Method which builds the left and right trees from the input string, using a syntactic binary tree"""
@@ -208,14 +223,14 @@ class Equation:
 				if e.power not in self.reduced_elem.keys():
 					self.reduced_elem[e.power] = e
 				else:
-					self.reduced_elem[e.power] = self.reduced_elem[e.power] + e
 					if self.flag_v:
 						if not count:
 							print("\nOperations carried out during final combination")
 							print("=================================================")
 							count = 1
-						print(f"{self.reduced_elem[e.power]} + {e} = {self.reduced_elem[e.power]}")
+						print(f"{self.reduced_elem[e.power]} + {e} = {self.reduced_elem[e.power] + e}")
 						print("-------------------------------------------------")
+					self.reduced_elem[e.power] = self.reduced_elem[e.power] + e
 			return None
 
 		new_tree = reduce_intermediate()
@@ -271,22 +286,22 @@ class Equation:
 			self.solution1 = 0
 		elif not a and b and c:
 			self.solution1 = -c / b
-			self.solution1_str = f"X = - ({self.num_format(c)}) / {self.num_format(b)} = {self.num_format(self.solution1)}"
+			self.solution1_str = f"X = -({self.num_format(c)}) / {self.num_format(b)} = {self.num_format(self.solution1)}"
 		else:
 			self.delta = b ** 2 - 4 * a * c
 			self.delta_str = f"Δ = {self.num_format(b)}^2 - 4 * {self.num_format(a)} * {self.num_format(c)} = {self.num_format(self.delta)}"
 
 			if self.delta == 0:
 				self.solution1 = -b / (2 * a)
-				self.solution1_str = f"X = - ({self.num_format(b)}) / (2 * {self.num_format(a)}) = {self.num_format(self.solution1)}"
+				self.solution1_str = f"X = -({self.num_format(b)}) / (2 * {self.num_format(a)}) = {self.num_format(self.solution1)}"
 
 			elif self.delta > 0:
 				sq_delta_pos = sqrt(self.delta)
 				self.solution1 = (-b - sq_delta_pos) / (2 * a)
 				self.solution2 = (-b + sq_delta_pos) / (2 * a)
-				self.solution1_str = (f"X1 = (- ({self.num_format(b)}) - sqrt({self.num_format(self.delta)}) / (2 * {a}) = "
+				self.solution1_str = (f"X1 = (-({self.num_format(b)}) - sqrt({self.num_format(self.delta)}) / (2 * {a}) = "
 				f"(- ({self.num_format(b)}) - {self.num_format(sq_delta_pos)} / (2 * {self.num_format(a)}) = {self.num_format(self.solution1)}")
-				self.solution2_str = (f"X2 = (- ({self.num_format(b)}) + sqrt({self.num_format(self.delta)}) / (2 * {self.num_format(a)}) = "
+				self.solution2_str = (f"X2 = (-({self.num_format(b)}) + sqrt({self.num_format(self.delta)}) / (2 * {self.num_format(a)}) = "
 				f"(- ({self.num_format(b)}) + {self.num_format(sq_delta_pos)} / (2 * {self.num_format(a)}) = {self.num_format(self.solution2)}")
 
 			elif self.delta < 0:
@@ -297,9 +312,9 @@ class Equation:
 				else:
 					self.solution1 = f"({self.num_format(-b)} - i * {self.num_format(sq_delta)}) / {self.num_format(2 * a)}"
 					self.solution2 = f"({self.num_format(-b)} + i * {self.num_format(sq_delta)}) / {self.num_format(2 * a)}"
-				self.solution1_str = (f"X1 = (- ({self.num_format(b)}) - i * sqrt({self.num_format(-self.delta)}) / (2 * {self.num_format(a)}) "
+				self.solution1_str = (f"X1 = (-({self.num_format(b)}) - i * sqrt({self.num_format(-self.delta)}) / (2 * {self.num_format(a)}) "
 				f"= {self.num_format(self.solution1)}")
-				self.solution2_str = (f"X2 = (- ({self.num_format(b)}) + i * sqrt({self.num_format(-self.delta)}) / (2 * {self.num_format(a)}) "
+				self.solution2_str = (f"X2 = (-({self.num_format(b)}) + i * sqrt({self.num_format(-self.delta)}) / (2 * {self.num_format(a)}) "
 				f"= {self.num_format(self.solution2)}")
 
 		return None
