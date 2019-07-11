@@ -159,16 +159,17 @@ class Equation:
 	def reduced_equation_str(self):
 		string = ''
 		for i, e in enumerate(sorted(list(self.reduced_elem.keys()))):
-			if Equation.flag_h and not self.reduced_elem[e].factor:
-				continue
-			if not self.reduced_elem[e].factor % 1:
-				self.reduced_elem[e].factor = int(self.reduced_elem[e].factor)
-			if not self.reduced_elem[e].power % 1:
-				self.reduced_elem[e].power = int(self.reduced_elem[e].power)
-			if i == 0:
-				string += self.reduced_elem[e].__str__()
-			else:
-				string += ' + ' + self.reduced_elem[e].__str__()
+			if i <= self.max_degree:
+				if Equation.flag_h and not self.reduced_elem[e].factor:
+					continue
+				if not self.reduced_elem[e].factor % 1:
+					self.reduced_elem[e].factor = int(self.reduced_elem[e].factor)
+				if not self.reduced_elem[e].power % 1:
+					self.reduced_elem[e].power = int(self.reduced_elem[e].power)
+				if i == 0:
+					string += self.reduced_elem[e].__str__()
+				else:
+					string += ' + ' + self.reduced_elem[e].__str__()
 		string += ' = 0'
 		string = string.replace('+ -', '- ')
 		if Equation.flag_h:
@@ -232,8 +233,8 @@ class Equation:
 
 		new_tree = reduce_intermediate()
 		complete_dict(new_tree)
-		self.reduced_str = self.reduced_equation_str()
 		self.ft_getdegree()
+		self.reduced_str = self.reduced_equation_str()
 		return None
 
 	def num_format(self, n=None):
@@ -278,10 +279,10 @@ class Equation:
 			if 'X' not in self.equation_str:
 				print("Always true.\n")
 			else:
-				print("Always true. Infinity of possible values for X in the set of real numbers.\n")
+				print("Always true. All real numbers are solutions.\n")
 			sys.exit(0)
 		elif not a and not b and c:
-			ft_error("Impossible equation.\n")
+			ft_error("Impossible equation. No solution.\n")
 		elif (not a and b and not c) or (a and not b and not c):
 			self.solution1 = 0
 		elif not a and b and c:
