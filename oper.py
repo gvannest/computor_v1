@@ -103,16 +103,29 @@ class Operator:
 		return self * other
 
 	def __truediv__(self, other):
+		if not other or (isinstance(other, X_class.X) and not other.factor):
+			ft_error("Error : division by zero.")
 		if isinstance(other, X_class.X) or isinstance(other, float):
 			return self.left / other + self.right / other
+		if isinstance(other, Operator) and self == other:
+			return X_class.X(power=0.0)
 		else:
-			ft_error("Equation non reductible et non solvable.")
+			ft_error("Equation non reductible and hence unsolvable.")
 
 	def __str__(self):
 		return f"{self.oper}"
 
 	def __repr__(self):
 		return self.__str__()
+
+	def __eq__(self, other):
+		if not isinstance(other, Operator):
+			return False
+		if not self.left.__eq__(other.left):
+			return False
+		if not self.right.__eq__(other.right):
+			return False
+		return True
 
 
 

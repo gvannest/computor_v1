@@ -3,38 +3,29 @@ import oper
 from utils import ft_error
 
 class X:
+	"""
+	Class of the X elements form the equation
 
-	def __init__(self, factor=1.0, power=1.0, flag_h=False):
+	class attributes:
+		- flag_h : human_readable flag
+
+	instance attributes:
+		- factor : factor in front of X
+		- power : degree of the X element
+
+	instance methods:
+		- mainly overcharge of operations operator to fi with X elements
+	"""
+
+	flag_h = False
+
+	def __init__(self, factor=1.0, power=1.0):
 		self.factor = factor
 		self.power = power
-		self.left = None
-		self.right = None
-		self.oper = ''
-		self.flag_h = flag_h
-
-	def _oper(self):
-		factor = str(int(self.factor)) if not self.factor % 1 else self.factor
-		power = str(int(self.power)) if not self.power % 1 else self.power
-		if not int(power): return str(factor)
-		if int(power) == 1:
-			if int(factor) == 1:
-				return "X"
-			else:
-				return f"{factor} * X"
-		elif int(power) < 0:
-			if int(factor) == 1:
-				return f"X^({power})"
-			else:
-				return f"{factor} * X^({power})"
-		else:
-			if int(factor) == 1:
-				return f"X^{power}"
-			else:
-				return f"{factor} * X^{power}"
 
 	def __add__(self, other):
 		if isinstance(other, X) and other.power == self.power:
-			new_obj = X(flag_h=self.flag_h)
+			new_obj = X()
 			new_obj.factor = other.factor + self.factor
 			new_obj.power = self.power
 			return new_obj
@@ -52,7 +43,7 @@ class X:
 
 	def __sub__(self, other):
 		if isinstance(other, X) and other.power == self.power:
-			new_obj = X(flag_h=self.flag_h)
+			new_obj = X()
 			new_obj.factor = self.factor - other.factor
 			new_obj.power = self.power
 			return new_obj
@@ -70,7 +61,7 @@ class X:
 
 	def __mul__(self, other):
 		if isinstance(other, X):
-			new_obj = X(flag_h=self.flag_h)
+			new_obj = X()
 			new_obj.factor = self.factor * other.factor
 			new_obj.power = self.power + other.power
 			return new_obj
@@ -83,22 +74,24 @@ class X:
 		return self * other
 
 	def __truediv__(self, other):
+		if isinstance(other, X) and not other.factor:
+			ft_error("Error : division by zero.")
 		if isinstance(other, X):
-			new_obj = X(flag_h=self.flag_h)
+			new_obj = X()
 			new_obj.factor = self.factor / other.factor
 			new_obj.power = self.power - other.power
 			return new_obj
 		if isinstance(other, float):
 			self.factor = self.factor / other
 			return self
-		ft_error("Equation non reductible et non solvable.")
+		ft_error("Equation non reductible and unsolvable.")
 		return None
 
 	def __rtruediv__(self, other):
 		return self / other
 
 	def __pow__(self, other):
-		new_obj = X(flag_h=self.flag_h)
+		new_obj = X()
 		if isinstance(other, float):
 			new_obj.factor = self.factor ** other
 			new_obj.power = self.power * other
@@ -129,8 +122,8 @@ class X:
 		return False
 
 	def __str__(self):
-		str_factor = f"{self.factor:.2f}" if isinstance(self.factor, float) and self.flag_h else f"{self.factor}"
-		str_power = f"{self.power:.2f}" if isinstance(self.power, float) and self.flag_h else f"{self.power}"
+		str_factor = f"{self.factor:.2f}" if isinstance(self.factor, float) and X.flag_h else f"{self.factor}"
+		str_power = f"{self.power:.2f}" if isinstance(self.power, float) and X.flag_h else f"{self.power}"
 		if self.power < 0:
 			return f"{str_factor} * X^({str_power})"
 		else:

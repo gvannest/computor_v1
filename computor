@@ -4,6 +4,7 @@ import sys
 import argparse
 
 from equation import Equation
+from X_class import X
 
 
 def ft_argparser():
@@ -25,7 +26,14 @@ def main(args):
 	if not args.input:
 		print("Error : please provide a valid string as argument.")
 		sys.exit(0)
-	eq = Equation(line=args.input, flag_h=args.human_readable, flag_t=args.tree, flag_n=args.neg, flag_v=args.verbose)
+
+	Equation.flag_h = args.human_readable
+	Equation.flag_t = args.tree
+	Equation.flag_n = args.neg
+	Equation.flag_v = args.verbose
+	X.flag_h = args.human_readable
+
+	eq = Equation(line=args.input)
 	eq.parsing_errors()
 	eq.build_trees()
 	eq.reduce_equation()
