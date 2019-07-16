@@ -159,7 +159,7 @@ class Equation:
 	def reduced_equation_str(self):
 		string = ''
 		for i, e in enumerate(sorted(list(self.reduced_elem.keys()))):
-			if i <= self.max_degree:
+			if e <= self.max_degree:
 				if Equation.flag_h and not self.reduced_elem[e].factor:
 					continue
 				if not self.reduced_elem[e].factor % 1:
@@ -250,8 +250,8 @@ class Equation:
 			for k, v in self.reduced_elem.items():
 				new_dico_elem[k - self.min_degree] = v * X(power=-self.min_degree)
 			self.reduced_elem = new_dico_elem
-			self.new_reduced_str = self.reduced_equation_str()
 			self.ft_getdegree()
+			self.new_reduced_str = self.reduced_equation_str()
 			print("There is at least one degree strictly lower than 0. Therefore, we multiply each element by the "
 				"absolute value of the lowest degree to try to solve this equation.\n")
 			print(f"New reduced form : {self.new_reduced_str}")
