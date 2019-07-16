@@ -285,6 +285,7 @@ class Equation:
 			ft_error("Impossible equation. No solution.\n")
 		elif (not a and b and not c) or (a and not b and not c):
 			self.solution1 = 0
+			self.solution1_str = f"X = {self.solution1}"
 		elif not a and b and c:
 			self.solution1 = -c / b
 			self.solution1_str = f"X = -({self.num_format(c)}) / {self.num_format(b)} = {self.num_format(self.solution1)}"

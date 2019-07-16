@@ -91,6 +91,10 @@ class Operator:
 			ft_error("Error : power of operations must be integer.")
 		if other == 1:
 			return self
+		elif other == 0:
+			return X_class.X(power=0.0)
+		elif other < 0:
+			return X_class.X(power=0.0) / (self ** (-other))
 		elif isinstance(other, float):
 				return self * self.__pow__(other - 1)
 
